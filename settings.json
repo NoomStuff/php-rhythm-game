@@ -1,0 +1,6 @@
+{
+    "keybinds": ["Q", "W", "O", "P"],
+    "scrollSpeed": 125,
+    "countdown": 3000,
+    "strumLinePosition": 0.5
+}
