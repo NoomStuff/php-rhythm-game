@@ -22,16 +22,21 @@ function applyGameSettings($game, $settings)
 
     if (isset($settings['scrollSpeed']) && is_numeric($settings['scrollSpeed']))
     {
-        $game->scrollSpeed = (int) $settings['scrollSpeed'];
+        $game->scrollSpeed = (int) max(1, $settings['scrollSpeed']);
     }
 
     if (isset($settings['countdown']) && is_numeric($settings['countdown']))
     {
-        $game->countdown = (int) $settings['countdown'];
+        $game->countdown = (int) max(0, $settings['countdown']);
     }
 
     if (isset($settings['strumLinePosition']) && is_numeric($settings['strumLinePosition']))
     {
-        $game->strumLinePosition = (float) $settings['strumLinePosition'];
+        $game->strumLinePosition = (float) max(0, min(1, $settings['strumLinePosition']));
+    }
+
+    if (isset($settings['advancedNoteDisplay']) && is_bool($settings['advancedNoteDisplay']))
+    {
+        $game->advancedNoteDisplay = $settings['advancedNoteDisplay'];
     }
 }

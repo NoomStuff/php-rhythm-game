@@ -45,6 +45,7 @@ class RatingHandler
 
             if ($closestNote !== null)
             {
+                // Get the rating for this hit
                 $closestNote->hitTime = $game->currentTime;
                 $ratingName = $this->getRating($game, $closestNote->position, $closestNote->hitTime);
                 $game->score += $game->ratings[$ratingName]["score"];
@@ -57,6 +58,9 @@ class RatingHandler
                     $game->combo = 0;
                 }
             }
+
+            // Consume this press so it only judges once per input event.
+            unset($game->keyStates[$key]);
         }
     }
 
