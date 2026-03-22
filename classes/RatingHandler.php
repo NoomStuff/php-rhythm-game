@@ -2,6 +2,12 @@
 
 class RatingHandler
 {
+    /**
+     * Marks notes beyond the hit window as misses.
+     *
+     * @param Game $game Current game state.
+     * @return void
+     */
     public function checkMisses($game)
     {
         foreach (Chart::getActiveNotes($game) as $note)
@@ -15,6 +21,12 @@ class RatingHandler
         }
     }
 
+    /**
+     * Judges key presses against nearest note.
+     *
+     * @param Game $game Current game state.
+     * @return void
+     */
     public function judge($game)
     {
         foreach (array_keys($game->keyPresses) as $key)
@@ -72,6 +84,14 @@ class RatingHandler
         }
     }
 
+    /**
+     * Resolves a rating name from the timing delta between target and hit.
+     *
+     * @param Game $game Current game state.
+     * @param int|float $targetTime Note target timestamp in milliseconds.
+     * @param int|float $hitTime Actual hit timestamp in milliseconds.
+     * @return string Rating key.
+     */
     public function getRating($game, $targetTime, $hitTime)
     {
         $timeDifference = abs($targetTime - $hitTime);

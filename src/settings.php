@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Loads JSON settings from disk.
+ *
+ * @param string $filePath Path to the settings file.
+ * @return array Parsed settings, or an empty array when missing or invalid.
+ */
 function loadSettings($filePath)
 {
     if (!file_exists($filePath))
@@ -13,6 +19,13 @@ function loadSettings($filePath)
     return is_array($data) ? $data : [];
 }
 
+/**
+ * Applies user settings to the game object with basic validation and clamping.
+ *
+ * @param Game $game Current game state.
+ * @param array $settings Parsed settings values.
+ * @return void
+ */
 function applyGameSettings($game, $settings)
 {
     if (isset($settings['keybinds']) && is_array($settings['keybinds']))

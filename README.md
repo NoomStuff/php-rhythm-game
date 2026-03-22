@@ -2,9 +2,11 @@
 
 # Goofy ahh PHP rhythm game
 
-Small PHP terminal rhythm game. 
+A little rhythm game written in PHP that runs in the terminal.
 
-This is a non-serious side project, not a serious engine or anything.
+Theres's no actual music so you'll have to imagine the "rhythm" part youself lol.
+
+This is a silly side project, not a serious engine or anything.
 
 It handles window resizing, can take any number of note lanes and you can load your own charts.
 

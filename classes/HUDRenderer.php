@@ -4,11 +4,20 @@ class HUDRenderer extends Renderer
 {
     private $ratingHandler;
 
+    /**
+     * @param RatingHandler $ratingHandler Rating helper for text output.
+     */
     public function __construct($ratingHandler)
     {
         $this->ratingHandler = $ratingHandler;
     }
 
+    /**
+     * Renders score, latest rating text, and combo information.
+     *
+     * @param Game $game Current game state.
+     * @return void
+     */
     public function render($game)
     {
         $latestHit = Chart::getLatestHit($game);

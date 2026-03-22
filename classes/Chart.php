@@ -4,6 +4,12 @@ class Chart
 {
     static $notes = [];
 
+    /**
+     * Loads notes from a JSON chart file into the shared note list.
+     *
+     * @param string $fileName Chart file path.
+     * @return void
+     */
     function loadChart($fileName = "chart.json")
     {
         try
@@ -33,6 +39,13 @@ class Chart
         }
     }
 
+    /**
+     * Appends a single note to the chart note pool.
+     *
+     * @param int|float $position Note timestamp in milliseconds.
+     * @param int $lane Lane index for the note.
+     * @return void
+     */
     function addNote($position, $lane)
     {
         $note = new Note();
@@ -41,6 +54,12 @@ class Chart
         Chart::$notes[] = $note;
     }
 
+    /**
+     * Returns notes currently within the visible playfield window.
+     *
+     * @param Game $game Current game state.
+     * @return Note[] Active notes.
+     */
     static function getActiveNotes($game)
     {
         $activeNotes = [];
@@ -54,6 +73,12 @@ class Chart
         return $activeNotes;
     }
 
+    /**
+     * Returns notes that are within the largest hittable timing window.
+     *
+     * @param Game $game Current game state.
+     * @return Note[] Hittable notes.
+     */
     static function getHittableNotes($game)
     {
         $activeNotes = [];
@@ -67,6 +92,12 @@ class Chart
         return $activeNotes;
     }
 
+    /**
+     * Returns the most recently hit note.
+     *
+     * @param Game $game Current game state.
+     * @return Note|null Latest hit note, or null when none were hit.
+     */
     static function getLatestHit($game)
     {
         $latestHitTime = 0;
