@@ -29,9 +29,10 @@ This project uses `stty` and raw terminal mode shenanigans for input + screen dr
 
 There's a `settings.json` file where you can change some settings:
 - `keybinds`: keys that have to be pressed to hit the notes, can be any number of keys
-- `scrollSpeed`: amount of time in ms between each row of characters, this does not change the timing of the notes, only the space between them
-- `countdown`: time in ms before the first note starts
+- `scrollSpeed`: amount of time in ms between each row of characters, this does not change the timing of the notes, only approach speed (space between notes)
+- `countdown`: time in ms to wait before the game starts
 - `strumLinePosition`: position of the play field as a percentage of the window width (`0.5` = middle)
+- `advancedNoteDisplay`: whether to use braille characters for more precise note display, which allows notes to be at different positions within the same line
 
 ## 🎵 Charting
 

@@ -40,7 +40,25 @@ function getScreenSize($game)
     }
 }
 
-function render($game, $strumLine, $judgementLine, $hudRenderer)
+function unicode_chr($code)
+{
+    return iconv('UCS-4LE', 'UTF-8', pack('V', $code));
+}
+
+function constructBraille(array $dots)
+{
+    $base = 0x2800;
+    $mask = 0;
+
+    foreach ($dots as $dot)
+    {
+        $mask |= 1 << ($dot - 1);
+    }
+
+    return unicode_chr($base + $mask);
+}
+
+function renderScreen($game, $strumLine, $judgementLine, $hudRenderer)
 {
     static $cleared = false;
 
