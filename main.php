@@ -63,7 +63,16 @@ while (true)
     if ($char !== false)
     {
         $key = strtoupper($char);
-        $game->keyStates[$key] = $frameNowSeconds;
+        if (in_array($key, $game->keybinds, true))
+        {
+            // Register a hit only on a new press; keep hold state for rendering.
+            if (!isset($game->keyStates[$key]))
+            {
+                $game->keyPresses[$key] = true;
+            }
+
+            $game->keyStates[$key] = $frameNowSeconds;
+        }
     }
 
     $game->now = $frameNowNs;
@@ -72,6 +81,9 @@ while (true)
     $ratingHandler->judge($game);
     $ratingHandler->checkMisses($game);
 
+    getScreenSize($game);
+    renderScreen($game, $strumLine, $judgementLine, $hudRenderer);
+
     foreach ($game->keyStates as $key => $time)
     {
         if (($frameNowSeconds - $time) > $game->holdTimeout)
@@ -79,9 +91,6 @@ while (true)
             unset($game->keyStates[$key]);
         }
     }
-
-    getScreenSize($game);
-    renderScreen($game, $strumLine, $judgementLine, $hudRenderer);
 
     usleep(1000);
 }

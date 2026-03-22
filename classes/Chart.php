@@ -59,7 +59,7 @@ class Chart
         $activeNotes = [];
         foreach (Chart::$notes as $note)
         {
-            if (abs($note->position - $game->currentTime) <= $game->ratings["Bad"]["window"] && !isset($note->hitTime))
+            if (abs($note->position - $game->currentTime) <= $game->ratings["Shit"]["hitHindow"] && !isset($note->hitTime))
             {
                 $activeNotes[] = $note;
             }

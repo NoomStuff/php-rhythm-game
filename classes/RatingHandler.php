@@ -6,10 +6,10 @@ class RatingHandler
     {
         foreach (Chart::getActiveNotes($game) as $note)
         {
-            if (!isset($note->hitTime) && $game->currentTime - $note->position > $game->ratings["Bad"]["window"])
+            if (!isset($note->hitTime) && $game->currentTime - $note->position > $game->ratings["Shit"]["hitHindow"])
             {
                 $note->hitTime = $game->currentTime;
-                $game->score += $game->ratings["Miss"]["score"];
+                $game->score += $game->ratings["Miss"]["scoreValue"];
                 $game->combo = 0;
             }
         }
@@ -17,17 +17,17 @@ class RatingHandler
 
     public function judge($game)
     {
-        foreach ($game->keybinds as $key)
+        foreach (array_keys($game->keyPresses) as $key)
         {
-            if (!isset($game->keyStates[$key]))
+            if (!in_array($key, $game->keybinds, true))
             {
-                continue; // key not pressed
+                continue; // ignore keys that are not bound to lanes
             }
 
             $closestNote = null;
             $closestDistance = PHP_INT_MAX;
 
-            $lane = array_search($key, $game->keybinds);
+            $lane = array_search($key, $game->keybinds, true);
             foreach (Chart::getHittableNotes($game) as $note)
             {
                 if ($note->lane != $lane || isset($note->hitTime))
@@ -48,8 +48,8 @@ class RatingHandler
                 // Get the rating for this hit
                 $closestNote->hitTime = $game->currentTime;
                 $ratingName = $this->getRating($game, $closestNote->position, $closestNote->hitTime);
-                $game->score += $game->ratings[$ratingName]["score"];
-                if ($game->ratings[$ratingName]["combo"])
+                
+                if ($game->ratings[$ratingName]["keepCombo"])
                 {
                     $game->combo++;
                 }
@@ -57,10 +57,18 @@ class RatingHandler
                 {
                     $game->combo = 0;
                 }
+
+                if ($game->ratings[$ratingName]["scoreValue"] > 0)
+                {
+                    $game->score += $game->ratings[$ratingName]["scoreValue"] * ($game->combo * $game->comboMultiplier + 1);
+                }
+                else
+                {
+                    $game->score += $game->ratings[$ratingName]["scoreValue"];
+                }
             }
 
-            // Consume this press so it only judges once per input event.
-            unset($game->keyStates[$key]);
+            unset($game->keyPresses[$key]);
         }
     }
 
@@ -70,7 +78,7 @@ class RatingHandler
 
         foreach ($game->ratings as $ratingName => $ratingData)
         {
-            if ($timeDifference <= $ratingData["window"])
+            if ($timeDifference <= $ratingData["hitHindow"])
             {
                 return $ratingName;
             }
