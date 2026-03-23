@@ -39,10 +39,10 @@ class HUDRenderer extends Renderer
             $rating = "....";
         }
 
-        $score = str_pad($game->score, 6, " ", STR_PAD_LEFT);
-        $combo = $game->combo > 1 ? str_pad($game->combo . "x", 4, " ", STR_PAD_RIGHT) : "    ";
+        $score = str_pad((int) $game->score, 6, " ", STR_PAD_LEFT);
+        $combo = $game->combo > 1 ? str_pad($game->combo . "x", 6, " ", STR_PAD_RIGHT) : "      ";
 
-        $hud = $score . " - " . $rating . " - " . $combo;
+        $hud = $score . " | " . $rating . " | " . $combo;
         echo getStrumLinePadding($game, strlen($hud)) . $hud . getStrumLinePadding($game, strlen($hud));
     }
 }

@@ -3,35 +3,28 @@
 class StrumLine extends Renderer
 {
     /**
-     * Returns a braille character that represents one of the sub-row note offsets.
+        * Maps a sub-row phase to its braille bit mask.
      *
      * @param int $subPosition Sub-row position from 0 to 4.
-     * @return string Braille character for that position.
+     * @return int Braille bit mask.
      */
-    function getBrailleNote($subPosition)
+        function subNoteMask($subPosition)
     {
         switch ($subPosition)
         {
             case 0:
-                $dots = [1, 4]; // ⠉
-                break;
+                return (1 << 0) | (1 << 3); // ⠉
             case 1:
-                $dots = [1, 4, 2, 5]; // ⠛
-                break;
+                return (1 << 0) | (1 << 1) | (1 << 3) | (1 << 4); // ⠛
             case 2:
-                $dots = [2, 5, 3, 6]; // ⠶
-                break;
+                return (1 << 1) | (1 << 2) | (1 << 4) | (1 << 5); // ⠶
             case 3:
-                $dots = [3, 6, 7, 8]; // ⣤
-                break;
+                return (1 << 2) | (1 << 5) | (1 << 6) | (1 << 7); // ⣤
             case 4:
-                $dots = [7, 8]; // ⣀
-                break;
+                return (1 << 6) | (1 << 7); // ⣀
             default:
-                $dots = [];
+                return 0;
         }
-
-        return constructBraille($dots);
     }
 
     /**
@@ -53,6 +46,12 @@ class StrumLine extends Renderer
 
         if ($game->advancedNoteDisplay)
         {
+            $brailleMasks = [];
+            for ($row = 0; $row < $game->windowHeight - 2; $row++)
+            {
+                $brailleMasks[$row] = array_fill(0, count($game->keybinds), 0);
+            }
+
             // Render the notes using braille
             foreach ($notes as $note)
             {
@@ -63,12 +62,34 @@ class StrumLine extends Renderer
                 $noteRow = (int) floor($game->windowHeight - 2 - ($rawNotePosition / $game->scrollSpeed));
 
                 // take only the leftover inside the row and map it to 5 braille phases
-                $subPosition = (int) floor((($game->windowHeight - 2 - ($rawNotePosition / $game->scrollSpeed)) - $noteRow) * 5);
+                $subPosition = (int) floor((($game->windowHeight - 2 - ($rawNotePosition / $game->scrollSpeed)) - $noteRow) * 4 + 1);
                 $subPosition = max(0, min(4, $subPosition));
 
                 if ($noteRow >= 0 && $noteRow < $game->windowHeight - 2)
                 {
-                    $screen[$noteRow][$note->lane] = $this->getBrailleNote($subPosition);
+                    $brailleMasks[$noteRow][$note->lane] |= $this->subNoteMask($subPosition);
+
+                    // When the note crosses into the next row, render the top cap there too.
+                    if ($subPosition === 4)
+                    {
+                        $nextRow = $noteRow + 1;
+                        if ($nextRow >= 0 && $nextRow < $game->windowHeight - 2)
+                        {
+                            $brailleMasks[$nextRow][$note->lane] |= $this->subNoteMask(0);
+                        }
+                    }
+                }
+            }
+
+            for ($row = 0; $row < $game->windowHeight - 2; $row++)
+            {
+                for ($lane = 0; $lane < count($game->keybinds); $lane++)
+                {
+                    $mask = $brailleMasks[$row][$lane];
+                    if ($mask !== 0)
+                    {
+                        $screen[$row][$lane] = brailleFromMask($mask);
+                    }
                 }
             }
         }

@@ -89,6 +89,31 @@ function constructBraille(array $dots)
 }
 
 /**
+ * Converts an 8-dot braille bit mask to a braille character.
+ *
+ * @param int $mask Braille mask where bit 0 maps to dot 1 and bit 7 maps to dot 8.
+ * @return string Braille character, or a space when the mask is empty.
+ */
+function brailleFromMask($mask)
+{
+    if (!is_int($mask) || $mask <= 0)
+    {
+        return ' ';
+    }
+
+    $dots = [];
+    for ($dot = 1; $dot <= 8; $dot++)
+    {
+        if (($mask & (1 << ($dot - 1))) !== 0)
+        {
+            $dots[] = $dot;
+        }
+    }
+
+    return constructBraille($dots);
+}
+
+/**
  * Renders the full frame buffer for the current game state.
  *
  * @param Game $game Current game state.
