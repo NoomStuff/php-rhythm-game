@@ -1,4 +1,4 @@
-![Gameplay Preview](preview.png)
+![Gameplay Preview](preview.gif)
 
 # Goofy ahh PHP rhythm game
 
